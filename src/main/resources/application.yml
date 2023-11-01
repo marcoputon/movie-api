@@ -1,9 +1,9 @@
 spring:
     datasource:
         driverClassName: org.h2.Driver
-        password: ''
-        url: jdbc:h2:mem:mydb
+        url: jdbc:h2:mem:mydb;CASE_INSENSITIVE_IDENTIFIERS=TRUE
         username: sa
+        password: ''
     h2:
         console:
             enabled: true
@@ -11,7 +11,7 @@ spring:
     jpa:
         defer-datasource-initialization: true
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: none
         properties:
             hibernate:
                 format_sql: true

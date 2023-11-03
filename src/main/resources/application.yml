@@ -22,3 +22,11 @@ spring:
     sql:
         init:
             mode: always
+
+logging:
+    level:
+        org.springframework.web: INFO
+        org.hibernate: ERROR
+
+log4j:
+    debug: true

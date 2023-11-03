@@ -1,0 +1,20 @@
+<configuration scan="true" scanPeriod="1 minutes">
+    <property name="PATTERN_STR" value="[movie-api] [%X{traceId},%X{spanId}] %d %-5level [%thread] class:%logger{0}.%method M=%M %msg%n"/>
+    <appender name="ROOT-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${PATTERN_STR}</pattern>
+        </encoder>
+    </appender>
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="ROOT-CONSOLE"/>
+    </appender>
+
+    <logger additivity="false" level="DEBUG" name="br.com.movie.api">
+        <appender-ref ref="ASYNC"/>
+    </logger>
+
+    <root level="INFO" >
+        <appender-ref ref="ASYNC"/>
+    </root>
+</configuration>

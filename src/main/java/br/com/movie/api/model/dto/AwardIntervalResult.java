@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -14,6 +16,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AwardIntervalResult {
-    private AwardInterval min;
-    private AwardInterval max;
+    private List<AwardInterval> min;
+    private List<AwardInterval> max;
 }

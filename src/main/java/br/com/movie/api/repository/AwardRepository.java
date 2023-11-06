@@ -18,7 +18,8 @@ public interface AwardRepository extends JpaRepository<Award, Long> {
                     "FROM \n" +
                     "   AWARD \n" +
                     "WHERE \n" +
-                    "   UPPER(des_winner) = 'YES'" +
+                    "   des_winner IS NOT NULL AND \n" +
+                    "   UPPER(des_winner) = 'YES' \n" +
                     "ORDER BY \n" +
                     "   ID_AWARD")
     List<Award> findWinnerProducersByPage(Pageable pageable);

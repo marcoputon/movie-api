@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -22,6 +23,10 @@ public class AwardIntervalService {
         AwardInterval biggestProducer = new AwardInterval();
         AwardInterval smallestProducer = new AwardInterval();
 
+        List<AwardInterval> biggestProducerList = new ArrayList<>();
+        List<AwardInterval> smallestProducerList = new ArrayList<>();
+
+
         List<String> producersWithMultipleWins = producerService.findProducersWithMultipleAwards();
         log.debug("producersWithMultipleWins={}", producersWithMultipleWins.toString());
 
@@ -31,6 +36,9 @@ public class AwardIntervalService {
 
             biggestProducer.set(intervals.getFirst());
             smallestProducer.set(intervals.getSecond());
+
+            biggestProducerList.add(biggestProducer);
+            smallestProducerList.add(smallestProducer);
         }
 
         for (String desProducer : producersWithMultipleWins) {
@@ -38,19 +46,29 @@ public class AwardIntervalService {
             var biggest = intervals.getFirst();
             var smallest = intervals.getSecond();
 
-            if (biggest.isBiggerThan(biggestProducer)) {
+            if (biggest.isSameSize(biggestProducer) && biggest.isDifferentProducer(biggestProducer)) {
+                biggestProducerList.add(biggest);
+            }
+            else if (biggest.isBiggerThan(biggestProducer)) {
                 biggestProducer.set(biggest);
+                biggestProducerList.clear();
+                biggestProducerList.add(biggest);
             }
 
-            if (smallest.isSmallerThan(smallestProducer)) {
+            if (smallest.isSameSize(smallestProducer) && smallest.isDifferentProducer(smallestProducer)) {
+                smallestProducerList.add(smallest);
+            }
+            else if (smallest.isSmallerThan(smallestProducer)) {
                 smallestProducer.set(smallest);
+                smallestProducerList.clear();
+                smallestProducerList.add(smallest);
             }
         }
 
         log.info("MSG=end");
         return AwardIntervalResult.builder()
-                .max(biggestProducer)
-                .min(smallestProducer)
+                .max(biggestProducerList)
+                .min(smallestProducerList)
                 .build();
     }
 

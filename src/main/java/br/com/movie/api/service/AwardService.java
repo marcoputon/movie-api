@@ -26,12 +26,11 @@ public class AwardService {
     private static final int INITIAL_PAGE = 0;
     private static final int PAGE_SIZE = 500;
     private static final String SEPARATOR_AND = " and ";
-    private static final String SEPARATOR_COMMA = ", ";
-
+    private static final String SEPARATOR_COMMA = "\\s*,\\s*";
 
 
     @EventListener(ApplicationReadyEvent.class)
-    private void populateProducerTableWithProducersFromAward() {
+    public void populateProducerTableWithProducersFromAward() {
         log.info("MSG=Start");
         Pageable pageRequest = PageRequest.of(INITIAL_PAGE, PAGE_SIZE);
 
@@ -58,7 +57,7 @@ public class AwardService {
 
 
     private List<String> convertAwardToListOfDesProducer(Award award) {
-        List<String> firstSplited = splitBySeparator(award.getDesProducers(), SEPARATOR_AND);
+        List<String> firstSplited = splitBySeparator(award.getDesProducers().trim(), SEPARATOR_AND);
 
         List<String> awardProducers = new ArrayList<>();
         firstSplited.forEach(

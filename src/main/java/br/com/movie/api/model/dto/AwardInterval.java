@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -59,20 +61,26 @@ public class AwardInterval {
     }
 
 
+    public boolean isSameSize(AwardInterval awardInterval) {
+        if (valid()) {
+            if (isNull(awardInterval.getInterval()))
+                return false;
+
+            return Objects.equals(this.getInterval(), awardInterval.getInterval());
+        }
+        return false;
+    }
+
+
+    public boolean isDifferentProducer(AwardInterval awardInterval) {
+        return !this.getProducer().equalsIgnoreCase(awardInterval.getProducer());
+    }
+
+
     public void nextYear(Integer year) {
         setFollowingWin(getPreviousWin());
         setPreviousWin(year);
         calculateInterval();
-    }
-
-
-    // for testing
-    public void print() {
-        System.out.println("producer: " + producer);
-        System.out.println("interval: " + interval);
-        System.out.println("previousWin: " + previousWin);
-        System.out.println("followingWin: " + followingWin);
-        System.out.println();
     }
 
 

@@ -19,13 +19,14 @@ public interface ProducerRepository extends JpaRepository<Producer, Long> {
                     "        count(*) AS total \n" +
                     "    FROM \n" +
                     "        PRODUCER p \n" +
-                    "    JOIN AWARD a ON \n" +
-                    "        a.id_award = p.id_award \n" +
-                    "        AND a.des_winner IS NOT NULL \n" +
-                    "    GROUP BY \n" +
-                    "        des_producer \n" +
-                    "    ORDER BY \n" +
-                    "        count(*) DESC \n" +
+                    "        JOIN AWARD a ON \n" +
+                    "            a.id_award = p.id_award \n" +
+                    "            AND a.des_winner IS NOT NULL \n" +
+                    "            AND UPPER(a.des_winner) = 'YES' \n" +
+                    "        GROUP BY \n" +
+                    "            des_producer \n" +
+                    "        ORDER BY \n" +
+                    "            count(*) DESC \n" +
                     ") \n" +
                     "WHERE \n" +
                     "    total > 1 \n" +

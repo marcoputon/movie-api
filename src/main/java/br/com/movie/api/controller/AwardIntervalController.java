@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/award-interval")
+@RequestMapping("/api/award-intervals")
 public class AwardIntervalController {
     private final AwardIntervalService intervalService;
 

@@ -1,18 +1,18 @@
 create table AWARD (
-    ID_AWARD        int             not null    AUTO_INCREMENT,
-    NUM_YEAR        int             not null                  ,
-    DES_TITLE       varchar(800)    not null                  ,
-    DES_STUDIOS     varchar(800)    not null                  ,
-    DES_PRODUCERS   varchar(800)    not null                  ,
-    DES_WINNER      varchar(800)                              ,
+    ID_AWARD        INT             NOT NULL    AUTO_INCREMENT,
+    NUM_YEAR        INT             NOT NULL                  ,
+    DES_TITLE       VARCHAR(800)    NOT NULL                  ,
+    DES_STUDIOS     VARCHAR(800)    NOT NULL                  ,
+    DES_PRODUCERS   VARCHAR(800)    NOT NULL                  ,
+    DES_WINNER      VARCHAR(800)                              ,
     PRIMARY KEY     (ID_AWARD)
 );
 
 
 create table PRODUCER (
-    ID_PRODUCER     int             not null    AUTO_INCREMENT,
-    DES_PRODUCER    varchar(800)    not null                  ,
-    ID_AWARD        int             not null                  ,
+    ID_PRODUCER     INT             NOT NULL    AUTO_INCREMENT,
+    DES_PRODUCER    VARCHAR(800)    NOT NULL                  ,
+    ID_AWARD        INT             NOT NULL                  ,
     PRIMARY KEY     (ID_PRODUCER)                             ,
     FOREIGN KEY     (ID_AWARD)      REFERENCES  AWARD(ID_AWARD)
 );

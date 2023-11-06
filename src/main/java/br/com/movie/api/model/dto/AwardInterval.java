@@ -66,7 +66,7 @@ public class AwardInterval {
     }
 
 
-    // for testing porpoises
+    // for testing
     public void print() {
         System.out.println("producer: " + producer);
         System.out.println("interval: " + interval);

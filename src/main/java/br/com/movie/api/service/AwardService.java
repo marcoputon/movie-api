@@ -32,6 +32,7 @@ public class AwardService {
 
     @EventListener(ApplicationReadyEvent.class)
     private void populateProducerTableWithProducersFromAward() {
+        log.info("MSG=Start");
         Pageable pageRequest = PageRequest.of(INITIAL_PAGE, PAGE_SIZE);
 
         var awardList = awardRepository.findWinnerProducersByPage(pageRequest);
@@ -41,6 +42,7 @@ public class AwardService {
             pageRequest = pageRequest.next();
             awardList = awardRepository.findWinnerProducersByPage(pageRequest);
         }
+        log.info("MSG=Finish");
     }
 
 

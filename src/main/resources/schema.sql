@@ -9,10 +9,20 @@ create table AWARD (
 );
 
 
-create table PRODUCER (
-    ID_PRODUCER     INT             NOT NULL    AUTO_INCREMENT,
-    DES_PRODUCER    VARCHAR(800)    NOT NULL                  ,
-    ID_AWARD        INT             NOT NULL                  ,
-    PRIMARY KEY     (ID_PRODUCER)                             ,
-    FOREIGN KEY     (ID_AWARD)      REFERENCES  AWARD(ID_AWARD)
+create table AWARD_WINNING_PRODUCER (
+    ID_AWARD_WINNING_PRODUCER   INT             NOT NULL    AUTO_INCREMENT,
+    DES_PRODUCER                VARCHAR(800)    NOT NULL                  ,
+    NUM_YEAR                    INT             NOT NULL                  ,
+    ID_AWARD                    INT             NOT NULL                  ,
+    PRIMARY KEY (ID_AWARD_WINNING_PRODUCER)
+);
+
+
+create table PRODUCER_INTERVAL (
+    ID_PRODUCER_INTERVAL     INT            NOT NULL    AUTO_INCREMENT,
+    DES_PRODUCER             VARCHAR(800)   NOT NULL                  ,
+    NUM_YEAR_START           INT            NOT NULL                  ,
+    NUM_YEAR_END             INT            NOT NULL                  ,
+    NUM_INTERVAL             INT            NOT NULL                  ,
+    PRIMARY KEY (ID_PRODUCER_INTERVAL)
 );

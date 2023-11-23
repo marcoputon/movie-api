@@ -1,11 +1,10 @@
 package br.com.movie.api;
 
 
-import br.com.movie.api.controller.AwardIntervalController;
 import br.com.movie.api.model.Award;
-import br.com.movie.api.model.Producer;
+import br.com.movie.api.model.ProducerInterval;
 import br.com.movie.api.repository.AwardRepository;
-import br.com.movie.api.repository.ProducerRepository;
+import br.com.movie.api.repository.ProducerIntervalRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class AwardIntervalTest {
 
     @Autowired
-    private ProducerRepository producerRepository;
+    private AwardRepository awardRepository;
 
     @Autowired
-    private AwardRepository awardRepository;
+    private ProducerIntervalRepository producerIntervalRepository;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -33,35 +32,32 @@ public class AwardIntervalTest {
 
     @BeforeEach
     void clearDatabase() {
-        producerRepository.deleteAll();
+        producerIntervalRepository.deleteAll();
         awardRepository.deleteAll();
     }
 
 
     @Test
     void shouldReturnMinAndMax() {
-        var award = awardRepository.saveAndFlush(buildAward("1, 2, 3", 1996, true));
-        saveProducer("1", award.getIdAward());
-        saveProducer("2", award.getIdAward());
-        saveProducer("3", award.getIdAward());
+        awardRepository.saveAndFlush(buildAward("1, 2, 3", 1996, true));
+        awardRepository.saveAndFlush(buildAward("4, 6", 1996, true));
+        awardRepository.saveAndFlush(buildAward("3", 1997, true));
+        awardRepository.saveAndFlush(buildAward("2", 1997, false));
+        awardRepository.saveAndFlush(buildAward("4 and 5", 1999, true));
 
-        award = awardRepository.saveAndFlush(buildAward("4, 6", 1996, true));
-        saveProducer("4", award.getIdAward());
-        saveProducer("6", award.getIdAward());
-
-        award = awardRepository.saveAndFlush(buildAward("3", 1997, true));
-        saveProducer("3", award.getIdAward());
-
-        award = awardRepository.saveAndFlush(buildAward("2", 1997, false));
-        saveProducer("2", award.getIdAward());
-
-        award = awardRepository.saveAndFlush(buildAward("4 and 5", 1999, true));
-        saveProducer("4", award.getIdAward());
-        saveProducer("5", award.getIdAward());
+        saveProducerInterval("2", 1996, 1997, 1);
+        saveProducerInterval("3", 1996, 1997, 1);
+        saveProducerInterval("4", 1996, 1999, 3);
 
         var firstCaseResponse =
                 "{" +
                     "\"min\":[" +
+                        "{" +
+                            "\"producer\":\"2\"," +
+                            "\"interval\":1," +
+                            "\"previousWin\":1996," +
+                            "\"followingWin\":1997" +
+                        "}," +
                         "{" +
                             "\"producer\":\"3\"," +
                             "\"interval\":1," +
@@ -88,17 +84,11 @@ public class AwardIntervalTest {
 
     @Test
     void shouldReturnSameMinAndMaxWhenItsTheOnlyOneWithMoreThanOneWinning() {
-        var award = awardRepository.saveAndFlush(buildAward("1, 2, 3", 1996, true));
-        saveProducer("1", award.getIdAward());
-        saveProducer("2", award.getIdAward());
-        saveProducer("3", award.getIdAward());
+        awardRepository.saveAndFlush(buildAward("1, 2, 3", 1996, true));
+        awardRepository.saveAndFlush(buildAward("4, 6", 1996, true));
+        awardRepository.saveAndFlush(buildAward("3", 1997, true));
 
-        award = awardRepository.saveAndFlush(buildAward("4, 6", 1996, true));
-        saveProducer("4", award.getIdAward());
-        saveProducer("6", award.getIdAward());
-
-        award = awardRepository.saveAndFlush(buildAward("3", 1997, true));
-        saveProducer("3", award.getIdAward());
+        saveProducerInterval("3", 1996, 1997, 1);
 
         var firstCaseResponse =
                 "{" +
@@ -129,21 +119,15 @@ public class AwardIntervalTest {
 
     @Test
     void shouldReturnMinAndMaxForMultipleResults() {
-        var award = awardRepository.saveAndFlush(buildAward("1, 2, 3, 4", 1996, true));
-        saveProducer("1", award.getIdAward());
-        saveProducer("2", award.getIdAward());
-        saveProducer("3", award.getIdAward());
-        saveProducer("4", award.getIdAward());
+        awardRepository.saveAndFlush(buildAward("1, 2, 3, 4", 1996, true));
+        awardRepository.saveAndFlush(buildAward("2", 1997, true));
+        awardRepository.saveAndFlush(buildAward("4, 6", 1998, true));
+        awardRepository.saveAndFlush(buildAward("3", 1998, true));
 
-        award = awardRepository.saveAndFlush(buildAward("2", 1997, true));
-        saveProducer("2", award.getIdAward());
+        saveProducerInterval("2", 1996, 1997, 1);
+        saveProducerInterval("3", 1996, 1998, 2);
+        saveProducerInterval("4", 1996, 1998, 2);
 
-        award = awardRepository.saveAndFlush(buildAward("4, 6", 1998, true));
-        saveProducer("4", award.getIdAward());
-        saveProducer("6", award.getIdAward());
-
-        award = awardRepository.saveAndFlush(buildAward("3", 1998, true));
-        saveProducer("3", award.getIdAward());
 
         var firstCaseResponse =
                 "{" +
@@ -205,11 +189,13 @@ public class AwardIntervalTest {
                 .build();
     }
 
-    private void saveProducer(String desProducer, long idAward) {
-        producerRepository.saveAndFlush(
-                Producer.builder()
+    private void saveProducerInterval(String desProducer, int numYearStart, int numYearEnd, int numInterval) {
+        producerIntervalRepository.saveAndFlush(
+                ProducerInterval.builder()
                         .desProducer(desProducer)
-                        .idAward(idAward)
+                        .numYearStart(numYearStart)
+                        .numYearEnd(numYearEnd)
+                        .numInterval(numInterval)
                         .build()
         );
     }

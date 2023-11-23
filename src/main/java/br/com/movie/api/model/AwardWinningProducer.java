@@ -17,11 +17,22 @@ import javax.persistence.Id;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Producer {
+public class AwardWinningProducer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idProducer;
+    private Long idAwardWinningProducer;
 
     private String desProducer;
+    private Integer numYear;
     private Long idAward;
+
+
+    public AwardWinningProducer getCopy() {
+        return AwardWinningProducer.builder()
+                .idAwardWinningProducer(this.idAwardWinningProducer)
+                .desProducer(this.desProducer)
+                .numYear(this.numYear)
+                .idAward(this.idAward)
+                .build();
+    }
 }

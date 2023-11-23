@@ -2,13 +2,13 @@ package br.com.movie.api;
 
 import br.com.movie.api.model.Award;
 import br.com.movie.api.repository.AwardRepository;
-import br.com.movie.api.repository.ProducerRepository;
+import br.com.movie.api.repository.AwardWinningProducerRepository;
+import br.com.movie.api.repository.ProducerIntervalRepository;
 import br.com.movie.api.service.AwardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Sort;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -19,15 +19,19 @@ public class AwardServiceTest {
     private AwardService awardService;
 
     @Autowired
-    private ProducerRepository producerRepository;
+    private AwardRepository awardRepository;
 
     @Autowired
-    private AwardRepository awardRepository;
+    private ProducerIntervalRepository producerIntervalRepository;
+
+    @Autowired
+    private AwardWinningProducerRepository awardWinningProducerRepository;
 
 
     @BeforeEach
     void clearDatabase() {
-        producerRepository.deleteAll();
+        producerIntervalRepository.deleteAll();
+        awardWinningProducerRepository.deleteAll();
         awardRepository.deleteAll();
     }
 
@@ -40,52 +44,10 @@ public class AwardServiceTest {
         awardRepository.saveAndFlush(buildAward("2", 1997, false));
         awardRepository.saveAndFlush(buildAward("4 and 5", 1999, true));
 
-        awardService.populateProducerTableWithProducersFromAward();
+        awardService.populateTables();
 
-        var producers = producerRepository.findAll();
-        assertEquals(8, producers.size());
-    }
-
-
-    @Test
-    void shouldBreakProducersOnComma() {
-        awardRepository.saveAndFlush(buildAward("1,2, 3", 1996, true));
-        awardService.populateProducerTableWithProducersFromAward();
-        assertForSeparators();
-    }
-
-
-    @Test
-    void shouldBreakProducersOnAND() {
-        awardRepository.saveAndFlush(buildAward("1 and 2 and 3", 1996, true));
-        awardService.populateProducerTableWithProducersFromAward();
-        assertForSeparators();
-    }
-
-
-    @Test
-    void shouldBreakProducersOnCommaAndAND() {
-        awardRepository.saveAndFlush(buildAward("1, 2 and 3", 1996, true));
-        awardService.populateProducerTableWithProducersFromAward();
-        assertForSeparators();
-    }
-
-
-    @Test
-    void shouldBreakProducersOnCommaAndANDAtTheSameWord() {
-        awardRepository.saveAndFlush(buildAward("1, 2, and 3", 1996, true));
-        awardService.populateProducerTableWithProducersFromAward();
-        assertForSeparators();
-    }
-
-
-    private void assertForSeparators() {
-        var producers = producerRepository.findAll(Sort.by("desProducer"));
-
-        assertEquals(3, producers.size());
-        assertEquals("1", producers.get(0).getDesProducer());
-        assertEquals("2", producers.get(1).getDesProducer());
-        assertEquals("3", producers.get(2).getDesProducer());
+        var producers = producerIntervalRepository.findAll();
+        assertEquals(2, producers.size());
     }
 
 

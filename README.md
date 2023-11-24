@@ -9,7 +9,9 @@ Ao iniciar a aplicação, a tabela _AWARD_ é preenchida automaticamente com os 
 ```
 year;title;studios;producers;winner
 ```
-Assim que a aplicacão inicia, o método ```populateProducerTableWithProducersFromAward()``` da classe ```AwardService``` é chamado para popular a tabela de produtores, separando cada produtor em uma linha distinta.
+Assim que a aplicacão inicia, o método ```populateTables()``` da classe ```AwardService``` é chamado para popular a tabela de produtores, separando cada produtor em uma linha distinta. Em seguida, é populada outra tabela apenas com os intervalos dos produtores premiados.
+
+Ao chamar a rota ```GET /api/award-intervals```, a aplicação irá buscar todos produtores que tiveram o menor e maior intervalo de tempo entre premios.
 
 ## Documentação da API
 
